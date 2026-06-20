@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>رحلة النور — حفظ القرآن الكريم</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============================================================
+     شريط النقاط العلوي الثابت (يظهر فقط بعد اختيار ملف الطفل)
+     ============================================================ -->
+<header class="points-header" id="pointsHeader" style="display:none;">
+  <button class="points-header-back" id="btnSwitchProfile" type="button" aria-label="تبديل الملف الشخصي">👨‍👩‍👧 العائلة</button>
+  <div class="points-header-center">
+    <span class="points-coin">⭐</span>
+    <span class="points-count" id="pointsCount">٠</span>
+    <span class="points-word">نقطة</span>
+  </div>
+  <button class="points-header-badges" id="btnOpenBadges" type="button" aria-label="معرض الأوسمة">
+    <span id="badgeMiniIcon">🏅</span>
+    <span class="badges-count" id="badgesCount">٠</span>
+  </button>
+</header>
+
+<!-- ============================================================
+     شاشة 0: بوابة العائلة (تسجيل الدخول السحابي)
+     ============================================================ -->
+<section id="screen-gateway" class="screen active">
+  <div class="login-card">
+    <div class="login-emblem">🏠✨</div>
+    <h1>بوابة العائلة</h1>
+    <p class="tagline">سجّل دخول عائلتك لحفظ تقدّم أبطالك في السحابة</p>
+
+    <input
+      type="text"
+      id="familyIdInput"
+      class="name-input"
+      placeholder="رقم هاتف العائلة أو بريدها الإلكتروني"
+      autocomplete="off"
+    >
+    <input
+      type="password"
+      id="familyPinInput"
+      class="name-input"
+      placeholder="الرقم السري (٤ أرقام)"
+      maxlength="4"
+      inputmode="numeric"
+      autocomplete="off"
+    >
+
+    <button class="role-btn boy gateway-btn" id="btnFamilyEnter" type="button">
+      <span class="emoji">🔑</span>
+      دخول / إنشاء حساب العائلة
+    </button>
+
+    <p class="login-error" id="gatewayError"></p>
+    <p class="gateway-hint" id="gatewayHint">
+      أول مرة؟ أدخلي رقماً سرياً من ٤ أرقام وسنُنشئ لكم حساباً جديداً تلقائياً.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     شاشة 0.5: لوحة ملفات الأبطال (أطفال العائلة)
+     ============================================================ -->
+<section id="screen-profiles" class="screen screen-top">
+  <div class="map-wrap">
+    <div class="map-header profiles-header">
+      <p class="greet">من سيكمل رحلته اليوم؟ 🌟</p>
+      <p class="progress-label">اختر بطلاً أو أضف بطلاً جديداً</p>
+    </div>
+
+    <div class="profiles-grid" id="profilesGrid">
+      <!-- تُبنى بطاقات الأطفال ديناميكياً -->
+    </div>
+
+    <button class="add-profile-btn" id="btnAddProfile" type="button">
+      ➕ إضافة بطل/أميرة جديد
+    </button>
+
+    <button class="back-btn-floating profiles-back" id="btnGatewayLogout" type="button">⬅️ تسجيل خروج العائلة</button>
+  </div>
+</section>
+
+<!-- نافذة إضافة طفل جديد -->
+<div class="modal-overlay" id="addProfileModal">
+  <div class="login-card">
+    <div class="login-emblem">📖✨</div>
+    <h1>بطل جديد</h1>
+    <p class="tagline">أدخل اسم الطفل واختر دوره</p>
+
+    <input
+      type="text"
+      id="newChildNameInput"
+      class="name-input"
+      placeholder="أحمد، فاطمة..."
+      maxlength="20"
+      autocomplete="off"
+    >
+
+    <div class="role-buttons">
+      <button class="role-btn boy" id="btnNewChildBoy" type="button">
+        <span class="emoji">👦</span>
+        أنا بطل
+      </button>
+      <button class="role-btn girl" id="btnNewChildGirl" type="button">
+        <span class="emoji">👑</span>
+        أنا أميرة
+      </button>
+    </div>
+
+    <p class="login-error" id="newChildError"></p>
+    <button class="cancel-modal-btn" id="btnCancelAddProfile" type="button">إلغاء</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     شاشة 2: خريطة الرحلة
+     ============================================================ -->
+<section id="screen-map" class="screen screen-top">
+  <div class="map-wrap">
+    <div class="map-header">
+      <p class="greet" id="mapGreeting">أهلاً بك يا بطل!</p>
+      <p class="progress-label" id="mapProgressLabel">0 من 49 سورة محفوظة</p>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="mapProgressFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="trail" id="trailContainer">
+      <!-- تُبنى المحطات ديناميكياً عبر JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     شاشة 3: شاشة قراءة السورة
+     ============================================================ -->
+<section id="screen-recite" class="screen screen-top">
+  <button class="back-btn-floating" id="btnBackToMap" type="button">⬅️ الخريطة</button>
+
+  <div class="recite-wrap">
+    <div class="recite-header">
+      <h2 id="reciteStationName">اسم المحطة</h2>
+      <div class="surah-pills" id="surahPillsContainer"></div>
+    </div>
+
+    <div class="quran-card" id="quranCard">
+      <div class="quran-card-loading">جارٍ تحميل السورة... ⏳</div>
+    </div>
+
+    <p class="review-note" id="reviewNote" style="display:none;">
+      🔁 أنت الآن تراجع سورة محفوظة سابقاً. استمتع بالاستماع والقراءة!
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     شاشة 3.5: تحدي الحفظ الذكي (لوحة داخلية فوق شاشة القراءة)
+     ============================================================ -->
+<div class="modal-overlay" id="challengeModal">
+  <div class="challenge-card">
+    <p class="challenge-eyebrow">🧠 تحدي الحفظ الذكي</p>
+    <h2 class="challenge-title">أكمل الآية الناقصة</h2>
+    <p class="challenge-ayah" id="challengeAyahText">--</p>
+
+    <div class="challenge-options" id="challengeOptions">
+      <!-- أزرار الخيارات الثلاثة تُبنى ديناميكياً -->
+    </div>
+
+    <p class="challenge-feedback" id="challengeFeedback"></p>
+  </div>
+</div>
+
+<!-- ============================================================
+     شاشة 4: نافذة الاحتفال
+     ============================================================ -->
+<div class="modal-overlay" id="celebrateModal">
+  <div class="celebrate-card">
+    <span class="celebrate-icon">💡</span>
+    <h2>أحسنت! 🎉</h2>
+    <p id="celebrateText">
+      ما شاء الله عليك يا <span class="child-name" id="celebrateName">--</span>!
+      لقد حفظت <span class="surah-highlight" id="celebrateSurah">--</span> كاملة وثابتة بنجاح!
+    </p>
+    <p class="celebrate-points" id="celebratePointsEarned">+٥٠ نقطة 🌟</p>
+    <button class="next-btn" id="btnNextStep" type="button">المتابعة للخطوة التالية ➡️</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     معرض الأوسمة الرقمية
+     ============================================================ -->
+<div class="modal-overlay" id="badgesModal">
+  <div class="badges-gallery-card">
+    <h2 class="badges-gallery-title">🏅 معرض الأوسمة الرقمية</h2>
+    <div class="badges-grid" id="badgesGrid"></div>
+    <button class="next-btn" id="btnCloseBadges" type="button">إغلاق</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     شاشة التتويج الكبرى + الشهادة القابلة للطباعة
+     ============================================================ -->
+<section id="screen-coronation" class="screen screen-top">
+  <div class="coronation-wrap">
+    <div class="coronation-fanfare">👑✨👑</div>
+    <h1 class="coronation-title">حفل التتويج الكبير</h1>
+    <p class="coronation-sub">لقد أتممتَ رحلة النور كاملة! إليك شهادتك الرسمية</p>
+
+    <div id="certificateContainer"><!-- تُبنى الشهادة ديناميكياً --></div>
+
+    <div class="coronation-actions">
+      <button class="memorize-btn" id="btnPrintCertificate" type="button">طباعة الشهادة للاحتفاظ بها 🖨️</button>
+      <button class="back-btn-floating coronation-map-btn" id="btnCoronationToMap" type="button">العودة للخريطة 🗺️</button>
+    </div>
+  </div>
+</section>
+
+<!-- مؤثر صوتي للتصفيق -->
+<audio id="applauseAudio" preload="none">
+  <source src="https://cdn.freesound.org/previews/536/536108_11937282-lq.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ============================================================
+     مكتبات خارجية (CDN)
+     ============================================================ -->
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+
+<script src="surahs.js"></script>
+<script src="firebase-config.js"></script>
+<script src="cloud-sync.js"></script>
+<script src="gamification.js"></script>
+<script src="index.js"></script>
+</body>
+</html>
