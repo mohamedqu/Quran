@@ -29,7 +29,7 @@
      ============================================================ -->
 <section id="screen-gateway" class="screen active">
   <div class="login-card">
-    <div class="login-emblem">🏠</div>
+    <div class="login-emblem">🏠✨</div>
     <h1>بوابة العائلة</h1>
     <p class="tagline">سجّل دخول عائلتك لحفظ تقدّم أبطالك في السحابة</p>
 
@@ -198,6 +198,20 @@
     <h2 class="badges-gallery-title">🏅 معرض الأوسمة الرقمية</h2>
     <div class="badges-grid" id="badgesGrid"></div>
     <button class="next-btn" id="btnCloseBadges" type="button">إغلاق</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     شهادة تقدير تلقائية عند إتمام محطة/مرحلة
+     ============================================================ -->
+<div class="modal-overlay" id="phaseCertificateModal">
+  <div class="phase-cert-modal-inner">
+    <div id="phaseCertificateContainer"><!-- تُبنى الشهادة ديناميكياً --></div>
+
+    <div class="phase-cert-actions">
+      <button class="memorize-btn" id="btnPrintPhaseCertificate" type="button">طباعة / حفظ الشهادة كملف PDF 🖨️</button>
+      <button class="back-btn-floating phase-cert-close-btn" id="btnClosePhaseCertificate" type="button">متابعة الرحلة 🗺️</button>
+    </div>
   </div>
 </div>
 
