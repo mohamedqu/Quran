@@ -174,6 +174,47 @@ const Gamification = (function () {
     return String(num).split("").map(d => map[d] ?? d).join("");
   }
 
+  /* ---------------------------------------------------------
+     6) شهادة تقدير تلقائية عند إتمام محطة/مرحلة (وليس الرحلة كاملة)
+     ---------------------------------------------------------
+     تصميم نظيف خالٍ من الأيقونات التزيينية الإضافية؛ يُستخدم نص
+     الشهادة المعتمد حرفياً، مع تعبئة اسم الطفل واسم المحطة وقائمة
+     السور المحفوظة في هذه المرحلة ديناميكياً. */
+  function stripDecorativeEmoji(text) {
+    // يزيل أي رموز إيموجي زخرفية من نهاية اسم المحطة (مثل 🌴 في "واحة مكة 🌴")
+    // لإبقاء اسم المحطة نظيفاً داخل نص الشهادة الرسمي
+    return String(text).replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F\u200D]+/gu, "").trim();
+  }
+
+  function buildPhaseCertificateHTML(childName, gender, stationName, surahNamesArray) {
+    const todayStr = new Date().toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" });
+    const cleanStationName = stripDecorativeEmoji(stationName);
+    const roleLabel = gender === "boy" ? "الْبَطَلَ" : "الْأَمِيرَةَ";
+    const surahsList = surahNamesArray.map(n => `سورة ${escapeHTML(n)}`).join("، ");
+
+    return `
+      <div class="phase-cert-card">
+        <p class="phase-cert-emblem-line">📜 شَهَادَةُ تَقْدِيرٍ 📜</p>
+        <p class="phase-cert-line">
+          تَفْخَرُ إِدَارَةُ تَطْبِيقِ رِحْلَةِ النُّورِ بِأَنْ تُتَوِّجَ:
+        </p>
+        <p class="phase-cert-name-line">
+          🏆 ${roleLabel}: ${escapeHTML(childName)} 🏆
+        </p>
+        <p class="phase-cert-line">
+          لِإِتْمَامِهِ طَرِيقَ النُّورِ وَاجْتِيَازِ ${escapeHTML(cleanStationName)} بِجَدَارَةٍ،
+          وَحِفْظِ السُّوَرِ الْكَرِيمَةِ:
+        </p>
+        <p class="phase-cert-surahs-line">📖 ${surahsList} 📖</p>
+        <p class="phase-cert-closing-line">
+          سَائِلِينَ اللَّهَ لَهُ التَّوْفِيقَ وَالسَّدَادَ فِي إِكْمَالِ رِحْلَتِهِ الْمُبَارَكَةِ
+          لِحِفْظِ كِتَابِ اللَّهِ.
+        </p>
+        <p class="phase-cert-date">${todayStr}</p>
+      </div>
+    `;
+  }
+
   return {
     POINTS,
     BADGES,
@@ -181,7 +222,8 @@ const Gamification = (function () {
     getAllBadgeDefs,
     buildChallenge,
     fireConfetti,
-    buildCertificateHTML
+    buildCertificateHTML,
+    buildPhaseCertificateHTML
   };
 })();
 
